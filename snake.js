@@ -23,12 +23,31 @@ let gameOver = false;
 
 var score = 0; // Luo ja alusta pistelaskun muuttuja
 
-// Funktio pistemäärän näyttämiseksi ruudulla
-function drawScore() {
-    context.fillStyle = "white"; // Aseta väri valkoiseksi
-    context.font = "20px Arial"; // Aseta fontin koko ja tyyli
-    context.fillText("Score: " + score, 10, board.height - 10); // Piirrä pistemäärä ruudun vasempaan alalaitaan
+// Funktio pistemäärän ja high scoren näyttämiseksi ruudulla
+function drawScores() {
+    context.fillStyle = "white";
+    context.font = "20px Arial";
+    context.fillText("Score: " + score, 10, board.height - 30);
+    context.fillText("High score: " + getHighScore(), 10, board.height - 10);
 }
+
+// Hae tallennettu high score localStoragesta
+function getHighScore() {
+    const storedHighScore = localStorage.getItem("highScore");
+    if (storedHighScore === null) {
+        return 0;
+    }
+    return parseInt(storedHighScore);
+}
+
+// Tallenna high score, jos se on suurempi kuin aiempi tallennettu high score
+function saveHighScore() {
+    const storedHighScore = getHighScore();
+    if (score > storedHighScore) {
+        localStorage.setItem("highScore", score);
+    }
+}
+
 
 // Function called when the window loads
 window.onload = function() {
@@ -72,6 +91,7 @@ function addEventListeners() {
 // Update the game state
 function update() {
     if (gameOver) {
+        saveHighScore(); // Tallenna high score pelin päätyttyä
         return;
     }
 
@@ -81,10 +101,9 @@ function update() {
     moveSnake();
     drawSnake();
     checkGameOver();
-    drawScore();
-    
-    
+    drawScores(); // Päivitä pistemäärät joka kierroksella
 }
+
 
 // Clear the game board
 function clearBoard() {
@@ -160,8 +179,9 @@ function checkSnakeCollision() {
 // End the game
 function endGame() {
     gameOver = true;
+    saveHighScore(); // Tallenna high score pelin päätyttyä
     alert("Game Over, sait " + score + " pistettä.");
-
+    window.location.reload(); // Lataa sivu uudelleen pelin alkutilaan
 }
 
 // Handle changing the snake's direction
