@@ -1,34 +1,36 @@
-/* Styling for the game */
+/* Pelin ulkoasun määrittely */
+
+/* Yleiset tyylit */
 body {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
+    font-family: 'Courier New', Courier, monospace; /* Fontti koko sivulle */
+    text-align: center; /* Tekstin keskitys */
 }
 
+/* Asettelu Snake-logolle */
 h1 {
-    position: relative;
+    position: relative; /* Asemointi suhteessa muihin elementteihin */
 }
 
 img {
-    position: absolute;
-    width: 200px; /* Aseta kuvan leveys tarpeen mukaan */
-    height: auto; /* Säädä korkeus automaattisesti suhteessa leveyteen */
-    top: 20px; /* Säädä pystysuuntaista sijaintia tarvittaessa */
-    left: 50%; /* Säädä vaakasuuntaista keskittämistä */
-    transform: translateX(-50%);
-    z-index: 1;
+    position: absolute; /* Absoluuttinen sijainti */
+    width: 200px; /* Kuvan leveys */
+    height: auto; /* Korkeus säädetään automaattisesti suhteessa leveyteen */
+    top: 20px; /* Pystysuuntainen sijainti */
+    left: 50%; /* Vaakasuuntainen keskitys */
+    transform: translateX(-50%); /* Tarkempi keskitys vaakasuunnassa */
+    z-index: 1; /* Pinon syvyys, määrittää näkyvyysjärjestyksen */
 }
 
+/* Pelialueen asettelu */
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex; /* Joustavien elementtien käyttö */
+    flex-direction: column; /* Sisällön sijoittuminen pystysuuntaan */
+    align-items: center; /* Elementtien keskitys vaakasuunnassa */
 }
 
 #board {
-    position: absolute;
-    top: 200px; /* Säädä haluamaasi etäisyyteen ylhäältä */
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute; /* Absoluuttinen sijainti */
+    top: 200px; /* Etäisyys ylhäältä */
+    left: 50%; /* Vaakasuuntainen keskitys */
+    transform: translateX(-50%); /* Tarkempi keskitys vaakasuunnassa */
 }
-
-

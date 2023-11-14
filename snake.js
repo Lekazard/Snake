@@ -1,29 +1,36 @@
-// Constants for the game
+// Pelin vakiot
 const blockSize = 25;
 const rows = 20;
 const cols = 20;
 
-// Variables for the game elements
+// Äänet peliin
+const gulpSound = new Audio("gulp.mp3");
+const gameOverSound = new Audio("game-over.mp3");
+
+// Ääniefekti ruoan syönnille
+function playGulpSound() {
+    gulpSound.play();
+}
+
+// Pelielementtien muuttujat
 let board;
 let context;
 
-// Snake's initial position and movement
+// Alustetaan käärmeen alkusijainti ja liike
 let snakeX = blockSize * 5;
 let snakeY = blockSize * 5;
 let velocityX = 0;
 let velocityY = 0;
 
-// Array to store snake's body segments
 let snakeBody = [];
 
-// Initial food position and game state
 let foodX;
 let foodY;
 let gameOver = false;
 
-var score = 0; // Luo ja alusta pistelaskun muuttuja
+var score = 0; // Pisteiden laskeminen
 
-// Funktio pistemäärän ja high scoren näyttämiseksi ruudulla
+// Näytä pisteet ruudulla
 function drawScores() {
     context.fillStyle = "white";
     context.font = "20px Arial";
@@ -31,7 +38,7 @@ function drawScores() {
     context.fillText("High score: " + getHighScore(), 10, board.height - 10);
 }
 
-// Hae tallennettu high score localStoragesta
+// Hae tallennettu korkein pistemäärä
 function getHighScore() {
     const storedHighScore = localStorage.getItem("highScore");
     if (storedHighScore === null) {
@@ -40,7 +47,7 @@ function getHighScore() {
     return parseInt(storedHighScore);
 }
 
-// Tallenna high score, jos se on suurempi kuin aiempi tallennettu high score
+// Tallenna korkein pistemäärä
 function saveHighScore() {
     const storedHighScore = getHighScore();
     if (score > storedHighScore) {
@@ -48,22 +55,21 @@ function saveHighScore() {
     }
 }
 
-
-// Function called when the window loads
+// Aseta peli kun sivu latautuu
 window.onload = function() {
     initializeGame();
 }
 
-// Initialize game parameters
+// Alusta peli
 function initializeGame() {
     setupCanvas();
     setStyling();
     addEventListeners();
     placeFood();
-    setInterval(update, 100); // Update every 100 milliseconds
+    setInterval(update, 100); // Päivitä joka 100 millisekunti
 }
 
-// Setup game canvas dimensions
+// Aseta pelialueen mitat
 function setupCanvas() {
     board = document.getElementById("board");
     board.height = rows * blockSize;
@@ -71,7 +77,7 @@ function setupCanvas() {
     context = board.getContext("2d");
 }
 
-// Set styling for the game elements
+// Aseta tyyli pelielementeille
 function setStyling() {
     document.body.style.backgroundColor = "black";
 
@@ -83,15 +89,15 @@ function setStyling() {
     heading.style.color = "white";
 }
 
-// Add event listeners for key presses
+// Lisää näppäinpainikkeille tapahtumakuuntelijat
 function addEventListeners() {
     document.addEventListener("keyup", changeDirection);
 }
 
-// Update the game state
+// Päivitä pelitila
 function update() {
     if (gameOver) {
-        saveHighScore(); // Tallenna high score pelin päätyttyä
+        saveHighScore();
         return;
     }
 
@@ -101,40 +107,39 @@ function update() {
     moveSnake();
     drawSnake();
     checkGameOver();
-    drawScores(); // Päivitä pistemäärät joka kierroksella
+    drawScores();
 }
 
-
-// Clear the game board
+// Tyhjennä pelilauta
 function clearBoard() {
     context.fillStyle = "black";
     context.fillRect(0, 0, board.width, board.height);
 }
 
-// Draw the food on the board
+// Piirrä ruoka pelilaudalle
 function drawFood() {
     context.fillStyle = "red";
     context.fillRect(foodX, foodY, blockSize, blockSize);
 }
 
-// Check if snake eats the food
+// Tarkista, syökö käärme ruoan
 function handleFoodCollision() {
     if (snakeX == foodX && snakeY == foodY) {
         snakeBody.push([foodX, foodY]);
         placeFood();
-        score++; // Lisää pisteen ruokaan osuessa
+        score++;
+        playGulpSound(); // Toista ääniefekti ruoan syönnin yhteydessä
     }
-    
 }
 
-// Move the snake
+// Liikuta käärmettä
 function moveSnake() {
     updateSnakeBody();
     snakeX += velocityX * blockSize;
     snakeY += velocityY * blockSize;
 }
 
-// Update the snake's body segments
+// Päivitä käärmeen ruumiinosat
 function updateSnakeBody() {
     for (let i = snakeBody.length - 1; i > 0; i--) {
         snakeBody[i] = snakeBody[i - 1];
@@ -144,7 +149,7 @@ function updateSnakeBody() {
     }
 }
 
-// Draw the snake on the board
+// Piirrä käärme laudalle
 function drawSnake() {
     context.fillStyle = "lime";
     context.fillRect(snakeX, snakeY, blockSize, blockSize);
@@ -153,20 +158,20 @@ function drawSnake() {
     }
 }
 
-// Check game over conditions
+// Tarkista pelin loppumisehdot
 function checkGameOver() {
     if (
         snakeX < 0 ||
-        snakeX >= cols * blockSize || // Muutettu ehtoa tässä
+        snakeX >= cols * blockSize ||
         snakeY < 0 ||
-        snakeY >= rows * blockSize || // Muutettu ehtoa tässä
+        snakeY >= rows * blockSize ||
         checkSnakeCollision()
     ) {
         endGame();
     }
 }
 
-// Check if the snake collides with itself
+// Tarkista, törmääkö käärme itseensä
 function checkSnakeCollision() {
     for (let i = 0; i < snakeBody.length; i++) {
         if (snakeX === snakeBody[i][0] && snakeY === snakeBody[i][1]) {
@@ -176,15 +181,16 @@ function checkSnakeCollision() {
     return false;
 }
 
-// End the game
+// Peli päättyy
 function endGame() {
     gameOver = true;
-    saveHighScore(); // Tallenna high score pelin päätyttyä
+    saveHighScore();
+    gameOverSound.play(); // Toista ääniefekti pelin päätyttyä
     alert("Game Over, sait " + score + " pistettä.");
-    window.location.reload(); // Lataa sivu uudelleen pelin alkutilaan
+    window.location.reload();
 }
 
-// Handle changing the snake's direction
+// Käsittele käärmeen liikkeen muutos
 function changeDirection(e) {
     if (e.code === "ArrowUp" && velocityY !== 1) {
         velocityX = 0;
@@ -201,7 +207,7 @@ function changeDirection(e) {
     }
 }
 
-// Place food at random positions
+// Aseta ruoka satunnaisesti
 function placeFood() {
     foodX = Math.floor(Math.random() * cols) * blockSize;
     foodY = Math.floor(Math.random() * rows) * blockSize;
