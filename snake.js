@@ -21,6 +21,15 @@ let foodX;
 let foodY;
 let gameOver = false;
 
+var score = 0; // Luo ja alusta pistelaskun muuttuja
+
+// Funktio pistemäärän näyttämiseksi ruudulla
+function drawScore() {
+    context.fillStyle = "white"; // Aseta väri valkoiseksi
+    context.font = "20px Arial"; // Aseta fontin koko ja tyyli
+    context.fillText("Score: " + score, 10, board.height - 10); // Piirrä pistemäärä ruudun vasempaan alalaitaan
+}
+
 // Function called when the window loads
 window.onload = function() {
     initializeGame();
@@ -72,6 +81,9 @@ function update() {
     moveSnake();
     drawSnake();
     checkGameOver();
+    drawScore();
+    
+    
 }
 
 // Clear the game board
@@ -88,10 +100,12 @@ function drawFood() {
 
 // Check if snake eats the food
 function handleFoodCollision() {
-    if (snakeX === foodX && snakeY === foodY) {
+    if (snakeX == foodX && snakeY == foodY) {
         snakeBody.push([foodX, foodY]);
         placeFood();
+        score++; // Lisää pisteen ruokaan osuessa
     }
+    
 }
 
 // Move the snake
@@ -146,7 +160,8 @@ function checkSnakeCollision() {
 // End the game
 function endGame() {
     gameOver = true;
-    alert("Game Over");
+    alert("Game Over, sait " + score + " pistettä.");
+
 }
 
 // Handle changing the snake's direction
