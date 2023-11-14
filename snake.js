@@ -157,9 +157,9 @@ function drawSnake() {
 function checkGameOver() {
     if (
         snakeX < 0 ||
-        snakeX > cols * blockSize ||
+        snakeX >= cols * blockSize || // Muutettu ehtoa tässä
         snakeY < 0 ||
-        snakeY > rows * blockSize ||
+        snakeY >= rows * blockSize || // Muutettu ehtoa tässä
         checkSnakeCollision()
     ) {
         endGame();
